@@ -1,64 +1,45 @@
 package de.dafuqs.reverb.mixin;
 
-import com.google.common.collect.*;
-import de.dafuqs.reverb.access.*;
-import de.dafuqs.reverb.sound.distortion.*;
-import de.dafuqs.reverb.sound.reverb.*;
-import net.minecraft.client.sound.*;
-import net.minecraft.sound.*;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
-import org.jetbrains.annotations.*;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.At.*;
-import org.spongepowered.asm.mixin.injection.callback.*;
+import de.dafuqs.reverb.sound.distortion.DistortionFilter;
+import de.dafuqs.reverb.sound.reverb.ReverbFilter;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.ChannelAccess;
+import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.function.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-@Mixin(SoundSystem.class)
-public abstract class SoundSystemMixin implements SoundSystemAccess {
+@Mixin(SoundEngine.class)
+public abstract class SoundSystemMixin {
+	
+	@Inject(method = "tickNonPaused", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getSoundSourceVolume(Lnet/minecraft/sounds/SoundSource;)F", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void reverb$tick(CallbackInfo ci, Iterator<?> iterator, Map.Entry<?, ?> entry, ChannelAccess.ChannelHandle sourceManager, SoundInstance soundInstance) {
+		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+	}
+	
+	@Inject(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void reverb$play(SoundInstance soundInstance, CallbackInfo ci, WeighedSoundEvents weightedSoundSet, ResourceLocation identifier, Sound sound, float f, float g, SoundSource soundCategory, float h, float i, SoundInstance.Attenuation attenuationType, boolean bl, Vec3 vec3d, boolean bl3, boolean bl4, CompletableFuture<?> completableFuture, ChannelAccess.ChannelHandle sourceManager) {
+		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+	}
 
-    @Shadow
-    @Final
-    private Multimap<SoundCategory, SoundInstance> sounds;
-
-    @Override
-    public void stopSoundsAtPosition(double x, double y, double z, @Nullable Identifier id, @Nullable SoundCategory category) {
-        Consumer<SoundInstance> consumer = (soundInstance) -> {
-            if ((id == null || soundInstance.getId().equals(id)) && (soundInstance.getX() == x) && (soundInstance.getY() == y) && (soundInstance.getZ() == z)) {
-                this.stop(soundInstance);
-            }
-        };
-
-        if (category != null) {
-            this.sounds.get(category).forEach(consumer);
-        } else {
-            this.sounds.forEach((soundCategory, soundInstance) -> consumer.accept(soundInstance));
-        }
-    }
-
-    @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getSoundVolume(Lnet/minecraft/sound/SoundCategory;)F", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void reverb$tick(CallbackInfo ci, Iterator<?> iterator, Map.Entry<?, ?> entry, Channel.SourceManager sourceManager, SoundInstance soundInstance) {
-        sourceManager.run(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-        sourceManager.run(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-    }
-
-    @Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void reverb$play(SoundInstance soundInstance, CallbackInfo ci, WeightedSoundSet weightedSoundSet, Identifier identifier, Sound sound, float f, float g, SoundCategory soundCategory, float h, float i, SoundInstance.AttenuationType attenuationType, boolean bl, Vec3d vec3d, boolean bl3, boolean bl4, CompletableFuture<?> completableFuture, Channel.SourceManager sourceManager) {
-        sourceManager.run(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-        sourceManager.run(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-    }
-
-    @Inject(method = "reloadSounds()V", at = @At("TAIL"))
-    public void reverb$reloadSounds(CallbackInfo ci) {
-        ReverbFilter.update();
-        DistortionFilter.update();
-    }
-
-    @Shadow
-    public abstract void stop(SoundInstance sound);
-
+	@Inject(method = "reload", at = @At("TAIL"))
+	public void reverb$reloadSounds(CallbackInfo ci) {
+		ReverbFilter.update();
+		DistortionFilter.update();
+	}
+	
 }

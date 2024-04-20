@@ -1,17 +1,21 @@
 package de.dafuqs.reverb.sound.distortion;
 
-import de.dafuqs.reverb.*;
-import de.dafuqs.reverb.sound.*;
-import net.fabricmc.api.*;
-import net.minecraft.client.*;
-import net.minecraft.client.sound.*;
-import net.minecraft.util.math.*;
-import org.apache.logging.log4j.*;
-import org.lwjgl.openal.*;
+import de.dafuqs.reverb.Reverb;
+import de.dafuqs.reverb.sound.SoundEffects;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.openal.AL11;
+import org.lwjgl.openal.EXTEfx;
 
-import java.util.*;
+import java.util.Optional;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class DistortionFilter {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -33,16 +37,16 @@ public class DistortionFilter {
 			update();
 		}
 		
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		
 		if (data.isEnabled(client, soundInstance)) {
 			EXTEfx.alAuxiliaryEffectSlotf(slot, EXTEfx.AL_EFFECTSLOT_GAIN, 0);
 			EXTEfx.alEffecti(id, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_DISTORTION);
-			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EDGE, MathHelper.clamp(data.getEdge(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EDGE, EXTEfx.AL_DISTORTION_MAX_EDGE));
-			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_GAIN, MathHelper.clamp(data.getGain(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_GAIN, EXTEfx.AL_DISTORTION_MAX_GAIN));
-			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_LOWPASS_CUTOFF, MathHelper.clamp(data.getLowpassCutoff(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_LOWPASS_CUTOFF, EXTEfx.AL_DISTORTION_MAX_LOWPASS_CUTOFF));
-			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EQCENTER, MathHelper.clamp(data.getEQCenter(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EQCENTER, EXTEfx.AL_DISTORTION_MAX_EQCENTER));
-			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EQBANDWIDTH, MathHelper.clamp(data.getEQBandWidth(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EQBANDWIDTH, EXTEfx.AL_DISTORTION_MAX_EQBANDWIDTH));
+			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EDGE, Mth.clamp(data.getEdge(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EDGE, EXTEfx.AL_DISTORTION_MAX_EDGE));
+			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_GAIN, Mth.clamp(data.getGain(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_GAIN, EXTEfx.AL_DISTORTION_MAX_GAIN));
+			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_LOWPASS_CUTOFF, Mth.clamp(data.getLowpassCutoff(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_LOWPASS_CUTOFF, EXTEfx.AL_DISTORTION_MAX_LOWPASS_CUTOFF));
+			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EQCENTER, Mth.clamp(data.getEQCenter(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EQCENTER, EXTEfx.AL_DISTORTION_MAX_EQCENTER));
+			EXTEfx.alEffectf(id, EXTEfx.AL_DISTORTION_EQBANDWIDTH, Mth.clamp(data.getEQBandWidth(client, soundInstance), EXTEfx.AL_DISTORTION_MIN_EQBANDWIDTH, EXTEfx.AL_DISTORTION_MAX_EQBANDWIDTH));
 			EXTEfx.alAuxiliaryEffectSloti(slot, EXTEfx.AL_EFFECTSLOT_EFFECT, id);
 			EXTEfx.alAuxiliaryEffectSlotf(slot, EXTEfx.AL_EFFECTSLOT_GAIN, 1);
 			
@@ -52,14 +56,14 @@ public class DistortionFilter {
 	}
 	
 	public static void update(SoundInstance soundInstance, int sourceID) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		
-		if (!(client == null || client.world == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOrEmpty(client.world.getRegistryKey().getValue());
+		if (!(client == null || client.level == null)) {
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(client.level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<DistortionEffect> distortion = soundEffects.get().getDistortion();
 				if (distortion.isPresent()) {
-					if (!distortion.get().shouldIgnore(soundInstance.getId())) {
+					if (!distortion.get().shouldIgnore(soundInstance.getLocation())) {
 						for (int i = 0; i < 2; i++) {
 							AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, 0);
 							AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, update(soundInstance, distortion.get()) ? slot : 0, 0, 0);
