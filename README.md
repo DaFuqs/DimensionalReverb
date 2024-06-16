@@ -5,7 +5,7 @@ Register your dimension identifier to the Reverb.SOUND_EFFECTS registry.
 
 This would add some reverb to the vanilla overworld:
 ```java
-Registry.register(Reverb.SOUND_EFFECTS, new Identifier("overworld"), 
+Registry.register(Reverb.SOUND_EFFECTS, Identifier.ofVanilla("overworld"), 
         new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(8.0F).setDensity(0.5F).build()),
         Optional.empty(),
         Optional.empty())

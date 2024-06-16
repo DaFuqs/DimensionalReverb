@@ -15,7 +15,7 @@ import java.util.function.*;
  */
 public abstract class DistortionEffect {
 	
-	public static final RegistryKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(new Identifier(Reverb.MOD_ID, "distortion_effect"));
+	public static final RegistryKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(Identifier.of(Reverb.MOD_ID, "distortion_effect"));
 	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = FabricRegistryBuilder.createSimple(DISTORTION_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC.getCodec().dispatchStable(DistortionEffect::getCodec, Function.identity());
 	

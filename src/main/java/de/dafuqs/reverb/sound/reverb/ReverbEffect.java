@@ -15,7 +15,7 @@ import java.util.function.*;
  */
 public abstract class ReverbEffect {
 	
-	public static final RegistryKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(new Identifier(Reverb.MOD_ID, "reverb_effect"));
+	public static final RegistryKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(Identifier.of(Reverb.MOD_ID, "reverb_effect"));
 	public static final SimpleRegistry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = FabricRegistryBuilder.createSimple(REVERB_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
 	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC.getCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
 	
