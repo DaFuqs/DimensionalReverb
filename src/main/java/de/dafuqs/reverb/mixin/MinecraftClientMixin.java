@@ -4,6 +4,7 @@ import de.dafuqs.reverb.*;
 import de.dafuqs.reverb.sound.*;
 import net.minecraft.client.*;
 import net.minecraft.client.network.*;
+import net.minecraft.client.sound.*;
 import net.minecraft.client.world.*;
 import net.minecraft.sound.*;
 import org.spongepowered.asm.mixin.*;
@@ -21,13 +22,13 @@ public class MinecraftClientMixin {
 	@Shadow
 	public ClientWorld world;
 	
-	@Inject(method = "getMusicType", at = @At("HEAD"), cancellable = true)
-	private void reverb$getMusicType(CallbackInfoReturnable<MusicSound> ci) {
+	@Inject(method = "getMusicInstance()Lnet/minecraft/client/sound/MusicInstance;", at = @At("HEAD"), cancellable = true)
+	private void reverb$getMusicType(CallbackInfoReturnable<MusicInstance> ci) {
 		if (this.player != null) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOrEmpty(world.getRegistryKey().getValue());
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptionalValue(world.getRegistryKey().getValue());
 			if (soundEffects.isPresent()) {
 				Optional<MusicSound> musicSound = soundEffects.get().getMusic();
-				musicSound.ifPresent(ci::setReturnValue);
+				musicSound.ifPresent(sound -> ci.setReturnValue(new MusicInstance(sound, 1.0F)));
 			}
 		}
 	}

@@ -63,7 +63,7 @@ public class ReverbFilter {
 		MinecraftClient client = MinecraftClient.getInstance();
 		
 		if (!(client == null || client.world == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOrEmpty(client.world.getRegistryKey().getValue());
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptionalValue(client.world.getRegistryKey().getValue());
 			if (soundEffects.isPresent()) {
 				Optional<ReverbEffect> reverb = soundEffects.get().getReverb();
 				if (reverb.isPresent()) {

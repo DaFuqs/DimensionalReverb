@@ -55,7 +55,7 @@ public class DistortionFilter {
 		MinecraftClient client = MinecraftClient.getInstance();
 		
 		if (!(client == null || client.world == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOrEmpty(client.world.getRegistryKey().getValue());
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptionalValue(client.world.getRegistryKey().getValue());
 			if (soundEffects.isPresent()) {
 				Optional<DistortionEffect> distortion = soundEffects.get().getDistortion();
 				if (distortion.isPresent()) {
