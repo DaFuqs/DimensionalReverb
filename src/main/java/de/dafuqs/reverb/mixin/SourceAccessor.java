@@ -1,10 +1,10 @@
 package de.dafuqs.reverb.mixin;
 
-import net.minecraft.client.sound.*;
+import com.mojang.blaze3d.audio.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.gen.*;
 
-@Mixin(Source.class)
+@Mixin(Channel.class)
 public interface SourceAccessor {
 	
 	@Accessor

@@ -2,16 +2,14 @@ package de.dafuqs.reverb.sound.reverb;
 
 import de.dafuqs.reverb.*;
 import de.dafuqs.reverb.sound.*;
-import net.fabricmc.api.*;
 import net.minecraft.client.*;
-import net.minecraft.client.sound.*;
-import net.minecraft.util.math.*;
+import net.minecraft.client.resources.sounds.*;
+import net.minecraft.util.*;
 import org.apache.logging.log4j.*;
 import org.lwjgl.openal.*;
 
 import java.util.*;
 
-@Environment(EnvType.CLIENT)
 public class ReverbFilter {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -33,24 +31,24 @@ public class ReverbFilter {
 			update();
 		}
 		
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		
 		if (data.isEnabled(client, soundInstance)) {
 			EXTEfx.alAuxiliaryEffectSlotf(slot, EXTEfx.AL_EFFECTSLOT_GAIN, 0);
 			EXTEfx.alEffecti(id, EXTEfx.AL_EFFECT_TYPE, EXTEfx.AL_EFFECT_REVERB);
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DENSITY, MathHelper.clamp(data.getDensity(client, soundInstance), EXTEfx.AL_REVERB_MIN_DENSITY, EXTEfx.AL_REVERB_MAX_DENSITY));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DIFFUSION, MathHelper.clamp(data.getDiffusion(client, soundInstance), EXTEfx.AL_REVERB_MIN_DIFFUSION, EXTEfx.AL_REVERB_MAX_DIFFUSION));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_GAIN, MathHelper.clamp(data.getGain(client, soundInstance), EXTEfx.AL_REVERB_MIN_GAIN, EXTEfx.AL_REVERB_MAX_GAIN));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_GAINHF, MathHelper.clamp(data.getGainHF(client, soundInstance), EXTEfx.AL_REVERB_MIN_GAINHF, EXTEfx.AL_REVERB_MAX_GAINHF));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DECAY_TIME, MathHelper.clamp(data.getDecayTime(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_TIME, EXTEfx.AL_REVERB_MAX_DECAY_TIME));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DECAY_HFRATIO, MathHelper.clamp(data.getDecayHFRatio(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_HFRATIO, EXTEfx.AL_REVERB_MAX_DECAY_HFRATIO));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_REFLECTIONS_GAIN, MathHelper.clamp(data.getReflectionsGainBase(client, soundInstance), EXTEfx.AL_REVERB_MIN_REFLECTIONS_GAIN, EXTEfx.AL_REVERB_MAX_REFLECTIONS_GAIN));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_REFLECTIONS_DELAY, MathHelper.clamp(data.getReflectionsDelay(client, soundInstance), EXTEfx.AL_REVERB_MIN_REFLECTIONS_DELAY, EXTEfx.AL_REVERB_MAX_REFLECTIONS_DELAY));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_LATE_REVERB_GAIN, MathHelper.clamp(data.getLateReverbGainBase(client, soundInstance), EXTEfx.AL_REVERB_MIN_LATE_REVERB_GAIN, EXTEfx.AL_REVERB_MAX_LATE_REVERB_GAIN));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_LATE_REVERB_DELAY, MathHelper.clamp(data.getLateReverbDelay(client, soundInstance), EXTEfx.AL_REVERB_MIN_LATE_REVERB_DELAY, EXTEfx.AL_REVERB_MAX_LATE_REVERB_DELAY));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_AIR_ABSORPTION_GAINHF, MathHelper.clamp(data.getAirAbsorptionGainHF(client, soundInstance), EXTEfx.AL_REVERB_MIN_AIR_ABSORPTION_GAINHF, EXTEfx.AL_REVERB_MAX_AIR_ABSORPTION_GAINHF));
-			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_ROOM_ROLLOFF_FACTOR, MathHelper.clamp(soundInstance.getAttenuationType() == SoundInstance.AttenuationType.LINEAR ? 2.0F / (Math.max(soundInstance.getVolume(), 1.0F) + 2.0F) : 0.0F, EXTEfx.AL_REVERB_MIN_ROOM_ROLLOFF_FACTOR, EXTEfx.AL_REVERB_MAX_ROOM_ROLLOFF_FACTOR));
-			EXTEfx.alEffecti(id, EXTEfx.AL_REVERB_DECAY_HFLIMIT, MathHelper.clamp(data.getDecayHFLimit(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_HFLIMIT, EXTEfx.AL_REVERB_MAX_DECAY_HFLIMIT));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DENSITY, Mth.clamp(data.getDensity(client, soundInstance), EXTEfx.AL_REVERB_MIN_DENSITY, EXTEfx.AL_REVERB_MAX_DENSITY));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DIFFUSION, Mth.clamp(data.getDiffusion(client, soundInstance), EXTEfx.AL_REVERB_MIN_DIFFUSION, EXTEfx.AL_REVERB_MAX_DIFFUSION));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_GAIN, Mth.clamp(data.getGain(client, soundInstance), EXTEfx.AL_REVERB_MIN_GAIN, EXTEfx.AL_REVERB_MAX_GAIN));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_GAINHF, Mth.clamp(data.getGainHF(client, soundInstance), EXTEfx.AL_REVERB_MIN_GAINHF, EXTEfx.AL_REVERB_MAX_GAINHF));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DECAY_TIME, Mth.clamp(data.getDecayTime(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_TIME, EXTEfx.AL_REVERB_MAX_DECAY_TIME));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_DECAY_HFRATIO, Mth.clamp(data.getDecayHFRatio(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_HFRATIO, EXTEfx.AL_REVERB_MAX_DECAY_HFRATIO));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_REFLECTIONS_GAIN, Mth.clamp(data.getReflectionsGainBase(client, soundInstance), EXTEfx.AL_REVERB_MIN_REFLECTIONS_GAIN, EXTEfx.AL_REVERB_MAX_REFLECTIONS_GAIN));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_REFLECTIONS_DELAY, Mth.clamp(data.getReflectionsDelay(client, soundInstance), EXTEfx.AL_REVERB_MIN_REFLECTIONS_DELAY, EXTEfx.AL_REVERB_MAX_REFLECTIONS_DELAY));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_LATE_REVERB_GAIN, Mth.clamp(data.getLateReverbGainBase(client, soundInstance), EXTEfx.AL_REVERB_MIN_LATE_REVERB_GAIN, EXTEfx.AL_REVERB_MAX_LATE_REVERB_GAIN));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_LATE_REVERB_DELAY, Mth.clamp(data.getLateReverbDelay(client, soundInstance), EXTEfx.AL_REVERB_MIN_LATE_REVERB_DELAY, EXTEfx.AL_REVERB_MAX_LATE_REVERB_DELAY));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_AIR_ABSORPTION_GAINHF, Mth.clamp(data.getAirAbsorptionGainHF(client, soundInstance), EXTEfx.AL_REVERB_MIN_AIR_ABSORPTION_GAINHF, EXTEfx.AL_REVERB_MAX_AIR_ABSORPTION_GAINHF));
+			EXTEfx.alEffectf(id, EXTEfx.AL_REVERB_ROOM_ROLLOFF_FACTOR, Mth.clamp(soundInstance.getAttenuation() == SoundInstance.Attenuation.LINEAR ? 2.0F / (Math.max(soundInstance.getVolume(), 1.0F) + 2.0F) : 0.0F, EXTEfx.AL_REVERB_MIN_ROOM_ROLLOFF_FACTOR, EXTEfx.AL_REVERB_MAX_ROOM_ROLLOFF_FACTOR));
+			EXTEfx.alEffecti(id, EXTEfx.AL_REVERB_DECAY_HFLIMIT, Mth.clamp(data.getDecayHFLimit(client, soundInstance), EXTEfx.AL_REVERB_MIN_DECAY_HFLIMIT, EXTEfx.AL_REVERB_MAX_DECAY_HFLIMIT));
 			EXTEfx.alAuxiliaryEffectSloti(slot, EXTEfx.AL_EFFECTSLOT_EFFECT, id);
 			EXTEfx.alAuxiliaryEffectSlotf(slot, EXTEfx.AL_EFFECTSLOT_GAIN, 1);
 			
@@ -60,14 +58,14 @@ public class ReverbFilter {
 	}
 	
 	public static void update(SoundInstance soundInstance, int sourceID) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		
-		if (!(client == null || client.world == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOrEmpty(client.world.getRegistryKey().getValue());
+		if (!(client.level == null)) {
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(client.level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<ReverbEffect> reverb = soundEffects.get().getReverb();
 				if (reverb.isPresent()) {
-					if (!reverb.get().shouldIgnore(soundInstance.getId())) {
+					if (!reverb.get().shouldIgnore(soundInstance.getLocation())) {
 						for (int i = 0; i < 2; i++) {
 							AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, 0);
 							AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER, update(soundInstance, reverb.get()) ? slot : 0, 0, 0);

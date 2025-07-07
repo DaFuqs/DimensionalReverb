@@ -2,11 +2,10 @@ package de.dafuqs.reverb.sound.reverb;
 
 import com.mojang.serialization.*;
 import de.dafuqs.reverb.*;
-import net.fabricmc.fabric.api.event.registry.*;
 import net.minecraft.client.*;
-import net.minecraft.client.sound.*;
-import net.minecraft.registry.*;
-import net.minecraft.util.*;
+import net.minecraft.client.resources.sounds.*;
+import net.minecraft.core.*;
+import net.minecraft.resources.*;
 
 import java.util.function.*;
 
@@ -15,9 +14,9 @@ import java.util.function.*;
  */
 public abstract class ReverbEffect {
 	
-	public static final RegistryKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(Identifier.of(Reverb.MOD_ID, "reverb_effect"));
-	public static final SimpleRegistry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = FabricRegistryBuilder.createSimple(REVERB_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
-	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC.getCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
+	public static final ResourceKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "reverb_effect"));
+	public static final MappedRegistry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = FabricRegistryBuilder.createSimple(REVERB_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC.byNameCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
 	
 	public abstract MapCodec<? extends ReverbEffect> getCodec();
 	
@@ -26,32 +25,32 @@ public abstract class ReverbEffect {
 	 *
 	 * @param identifier the Identifier of the Sound Event
 	 */
-	public abstract boolean shouldIgnore(Identifier identifier);
+	public abstract boolean shouldIgnore(ResourceLocation identifier);
 	
-	public abstract boolean isEnabled(MinecraftClient client, SoundInstance soundInstance);
+	public abstract boolean isEnabled(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getAirAbsorptionGainHF(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getAirAbsorptionGainHF(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getDecayHFRatio(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getDecayHFRatio(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getDensity(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getDensity(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getDiffusion(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getDiffusion(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getGain(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getGain(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getGainHF(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getGainHF(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getLateReverbGainBase(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getLateReverbGainBase(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getDecayTime(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getDecayTime(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getReflectionsGainBase(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getReflectionsGainBase(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract int getDecayHFLimit(MinecraftClient client, SoundInstance soundInstance);
+	public abstract int getDecayHFLimit(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getLateReverbDelay(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getLateReverbDelay(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getReflectionsDelay(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getReflectionsDelay(Minecraft client, SoundInstance soundInstance);
 	
 }

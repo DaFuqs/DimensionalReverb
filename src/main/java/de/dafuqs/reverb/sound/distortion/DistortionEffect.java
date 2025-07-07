@@ -2,11 +2,11 @@ package de.dafuqs.reverb.sound.distortion;
 
 import com.mojang.serialization.*;
 import de.dafuqs.reverb.*;
-import net.fabricmc.fabric.api.event.registry.*;
 import net.minecraft.client.*;
-import net.minecraft.client.sound.*;
-import net.minecraft.registry.*;
-import net.minecraft.util.*;
+import net.minecraft.client.resources.sounds.*;
+import net.minecraft.core.*;
+import net.minecraft.resources.*;
+import net.neoforged.neoforge.registries.*;
 
 import java.util.function.*;
 
@@ -15,9 +15,9 @@ import java.util.function.*;
  */
 public abstract class DistortionEffect {
 	
-	public static final RegistryKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey.ofRegistry(Identifier.of(Reverb.MOD_ID, "distortion_effect"));
-	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = FabricRegistryBuilder.createSimple(DISTORTION_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
-	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC.getCodec().dispatchStable(DistortionEffect::getCodec, Function.identity());
+	public static final ResourceKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "distortion_effect"));
+	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = new RegistryBuilder<>(DISTORTION_EFFECT_CODEC_KEY).sync(true).create();
+	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC.byNameCodec().dispatchStable(DistortionEffect::getCodec, Function.identity());
 	
 	public abstract MapCodec<? extends DistortionEffect> getCodec();
 	
@@ -26,18 +26,18 @@ public abstract class DistortionEffect {
 	 *
 	 * @param identifier the Identifier of the Sound Event
 	 */
-	public abstract boolean shouldIgnore(Identifier identifier);
+	public abstract boolean shouldIgnore(ResourceLocation identifier);
 	
-	public abstract boolean isEnabled(MinecraftClient client, SoundInstance soundInstance);
+	public abstract boolean isEnabled(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getEdge(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getEdge(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getGain(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getGain(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getLowpassCutoff(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getLowpassCutoff(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getEQCenter(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getEQCenter(Minecraft client, SoundInstance soundInstance);
 	
-	public abstract float getEQBandWidth(MinecraftClient client, SoundInstance soundInstance);
+	public abstract float getEQBandWidth(Minecraft client, SoundInstance soundInstance);
 	
 }

@@ -3,22 +3,23 @@ package de.dafuqs.reverb;
 import de.dafuqs.reverb.sound.*;
 import de.dafuqs.reverb.sound.distortion.*;
 import de.dafuqs.reverb.sound.reverb.*;
-import net.fabricmc.api.*;
-import net.fabricmc.fabric.api.event.registry.*;
-import net.minecraft.registry.*;
-import net.minecraft.util.*;
+import net.minecraft.core.*;
+import net.minecraft.resources.*;
+import net.neoforged.bus.api.*;
+import net.neoforged.fml.common.*;
+import net.neoforged.neoforge.registries.*;
 
-public class Reverb implements ModInitializer {
+@Mod(Reverb.MOD_ID)
+public class Reverb {
 	
 	public static final String MOD_ID = "reverb";
 	
-	public static final RegistryKey<Registry<SoundEffects>> SOUND_EFFECTS_KEY = RegistryKey.ofRegistry(Identifier.of(MOD_ID, "sound_effects"));
-	public static final Registry<SoundEffects> SOUND_EFFECTS = FabricRegistryBuilder.createSimple(SOUND_EFFECTS_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+	public static final ResourceKey<Registry<SoundEffects>> SOUND_EFFECTS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MOD_ID, "sound_effects"));
+	public static final Registry<SoundEffects> SOUND_EFFECTS = new RegistryBuilder<>(SOUND_EFFECTS_KEY).sync(true).create();
 	
-	@Override
-	public void onInitialize() {
-		Registry.register(ReverbEffect.REVERB_EFFECT_CODEC, Identifier.of(MOD_ID, "static"), StaticReverbEffect.CODEC);
-		Registry.register(DistortionEffect.DISTORTION_EFFECT_CODEC, Identifier.of(MOD_ID, "static"), StaticDistortionEffect.CODEC);
+	public Reverb(IEventBus modBus) {
+		Registry.register(ReverbEffect.REVERB_EFFECT_CODEC, ResourceLocation.fromNamespaceAndPath(MOD_ID, "static"), StaticReverbEffect.CODEC);
+		Registry.register(DistortionEffect.DISTORTION_EFFECT_CODEC, ResourceLocation.fromNamespaceAndPath(MOD_ID, "static"), StaticDistortionEffect.CODEC);
 	}
 	
 }
