@@ -6,6 +6,7 @@ import net.minecraft.client.*;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.core.*;
 import net.minecraft.resources.*;
+import net.neoforged.neoforge.registries.*;
 
 import java.util.function.*;
 
@@ -15,7 +16,7 @@ import java.util.function.*;
 public abstract class ReverbEffect {
 	
 	public static final ResourceKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "reverb_effect"));
-	public static final MappedRegistry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = FabricRegistryBuilder.createSimple(REVERB_EFFECT_CODEC_KEY).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+	public static final Registry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = new RegistryBuilder<>(REVERB_EFFECT_CODEC_KEY).sync(true).create();
 	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC.byNameCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
 	
 	public abstract MapCodec<? extends ReverbEffect> getCodec();

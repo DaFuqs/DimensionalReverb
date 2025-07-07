@@ -19,12 +19,12 @@ public class MinecraftClientMixin {
 	public LocalPlayer player;
 	
 	@Shadow
-	public ClientLevel world;
+	public ClientLevel level;
 	
-	@Inject(method = "getMusicType", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "getSituationalMusic()Lnet/minecraft/sounds/Music;", at = @At("HEAD"), cancellable = true)
 	private void reverb$getMusicType(CallbackInfoReturnable<Music> ci) {
 		if (this.player != null) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(world.dimension().location());
+			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<Music> musicSound = soundEffects.get().getMusic();
 				musicSound.ifPresent(ci::setReturnValue);

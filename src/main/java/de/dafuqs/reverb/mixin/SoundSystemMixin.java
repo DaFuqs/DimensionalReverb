@@ -19,13 +19,13 @@ public abstract class SoundSystemMixin {
 		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
 	}
 	
-	@Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
+	@Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
 	public void reverb$play(SoundInstance soundInstance, CallbackInfo ci, @Local ChannelAccess.ChannelHandle sourceManager) {
 		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
 		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
 	}
 	
-	@Inject(method = "reloadSounds()V", at = @At("TAIL"))
+	@Inject(method = "reload()V", at = @At("TAIL"))
 	public void reverb$reloadSounds(CallbackInfo ci) {
 		ReverbFilter.update();
 		DistortionFilter.update();
