@@ -15,9 +15,9 @@ import java.util.function.*;
  */
 public abstract class DistortionEffect {
 	
-	public static final ResourceKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "distortion_effect"));
-	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = new RegistryBuilder<>(DISTORTION_EFFECT_CODEC_KEY).sync(true).create();
-	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC.byNameCodec().dispatchStable(DistortionEffect::getCodec, Function.identity());
+	public static final ResourceKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECTS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "distortion_effect"));
+	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECTS = new RegistryBuilder<>(DISTORTION_EFFECTS_KEY).sync(true).create();
+	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECTS.byNameCodec().dispatchStable(DistortionEffect::getCodec, Function.identity());
 	
 	public abstract MapCodec<? extends DistortionEffect> getCodec();
 	

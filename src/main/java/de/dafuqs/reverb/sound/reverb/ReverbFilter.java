@@ -1,15 +1,16 @@
 package de.dafuqs.reverb.sound.reverb;
 
-import de.dafuqs.reverb.*;
 import de.dafuqs.reverb.sound.*;
 import net.minecraft.client.*;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.util.*;
+import net.neoforged.api.distmarker.*;
 import org.apache.logging.log4j.*;
 import org.lwjgl.openal.*;
 
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 public class ReverbFilter {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -61,7 +62,7 @@ public class ReverbFilter {
 		Minecraft client = Minecraft.getInstance();
 		
 		if (!(client.level == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(client.level.dimension().location());
+			Optional<SoundEffects> soundEffects = SoundEffects.SOUND_EFFECTS.getOptional(client.level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<ReverbEffect> reverb = soundEffects.get().getReverb();
 				if (reverb.isPresent()) {

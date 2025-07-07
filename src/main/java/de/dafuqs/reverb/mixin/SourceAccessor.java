@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.*;
 public interface SourceAccessor {
 	
 	@Accessor
-	int getPointer();
+	int getSource();
 	
 }

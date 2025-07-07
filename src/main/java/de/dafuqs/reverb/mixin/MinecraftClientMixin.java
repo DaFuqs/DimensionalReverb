@@ -1,6 +1,5 @@
 package de.dafuqs.reverb.mixin;
 
-import de.dafuqs.reverb.*;
 import de.dafuqs.reverb.sound.*;
 import net.minecraft.client.*;
 import net.minecraft.client.multiplayer.*;
@@ -24,7 +23,7 @@ public class MinecraftClientMixin {
 	@Inject(method = "getSituationalMusic()Lnet/minecraft/sounds/Music;", at = @At("HEAD"), cancellable = true)
 	private void reverb$getMusicType(CallbackInfoReturnable<Music> ci) {
 		if (this.player != null) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(level.dimension().location());
+			Optional<SoundEffects> soundEffects = SoundEffects.SOUND_EFFECTS.getOptional(level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<Music> musicSound = soundEffects.get().getMusic();
 				musicSound.ifPresent(ci::setReturnValue);

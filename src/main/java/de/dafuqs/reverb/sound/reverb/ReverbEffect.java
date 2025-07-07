@@ -15,18 +15,18 @@ import java.util.function.*;
  */
 public abstract class ReverbEffect {
 	
-	public static final ResourceKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "reverb_effect"));
-	public static final Registry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = new RegistryBuilder<>(REVERB_EFFECT_CODEC_KEY).sync(true).create();
-	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC.byNameCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
+	public static final ResourceKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECTS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Reverb.MOD_ID, "reverb_effect"));
+	public static final Registry<MapCodec<? extends ReverbEffect>> REVERB_EFFECTS = new RegistryBuilder<>(REVERB_EFFECTS_KEY).sync(true).create();
+	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECTS.byNameCodec().dispatchStable(ReverbEffect::getCodec, Function.identity());
 	
 	public abstract MapCodec<? extends ReverbEffect> getCodec();
 	
 	/**
 	 * Whether a Sound Event should be ignored
 	 *
-	 * @param identifier the Identifier of the Sound Event
+	 * @param resourceLocation the Identifier of the Sound Event
 	 */
-	public abstract boolean shouldIgnore(ResourceLocation identifier);
+	public abstract boolean shouldIgnore(ResourceLocation resourceLocation);
 	
 	public abstract boolean isEnabled(Minecraft client, SoundInstance soundInstance);
 	

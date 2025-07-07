@@ -67,8 +67,8 @@ public class StaticReverbEffect extends ReverbEffect {
 	}
 	
 	@Override
-	public boolean shouldIgnore(ResourceLocation identifier) {
-		return identifier.getPath().contains("ui.") || identifier.getPath().contains("music.") || identifier.getPath().contains("block.lava.pop") || identifier.getPath().contains("weather.") || identifier.getPath().startsWith("atmosfera") || identifier.getPath().startsWith("dynmus");
+	public boolean shouldIgnore(ResourceLocation resourceLocation) {
+		return resourceLocation.getPath().contains("ui.") || resourceLocation.getPath().contains("music.") || resourceLocation.getPath().contains("block.lava.pop") || resourceLocation.getPath().contains("weather.") || resourceLocation.getPath().startsWith("atmosfera") || resourceLocation.getPath().startsWith("dynmus");
 	}
 	
 	@Override

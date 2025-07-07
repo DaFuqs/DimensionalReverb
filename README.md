@@ -1,14 +1,19 @@
 A small fabric library able to modify sound reverb, distortion or set a fixed background music for dimensions.
 
 # Adding Dimensional Sound Settings
-Register your dimension identifier to the Reverb.SOUND_EFFECTS registry.
+
+Register your dimension identifier to the Reverb.SOUND_EFFECTS registry after all mod initializers have run.
 
 This would add some reverb to the vanilla overworld:
 ```java
-Registry.register(Reverb.SOUND_EFFECTS, Identifier.ofVanilla("overworld"), 
+Registry.register(SoundEffects.SOUND_EFFECTS, ResourceLocation.withDefaultNamespace("overworld"),
         new SoundEffects(Optional.of(new StaticReverbEffect.Builder().setDecayTime(8.0F).setDensity(0.5F).build()),
-        Optional.empty(),
-        Optional.empty())
+		Optional.
+
+empty(),
+                Optional.
+
+empty())
 );
 ```
 

@@ -13,16 +13,16 @@ import org.spongepowered.asm.mixin.injection.callback.*;
 @Mixin(SoundEngine.class)
 public abstract class SoundSystemMixin {
 	
-	@Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getSoundVolume(Lnet/minecraft/sound/SoundCategory;)F"))
+	@Inject(method = "tickNonPaused()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getSoundSourceVolume(Lnet/minecraft/sounds/SoundSource;)F"))
 	public void reverb$tick(CallbackInfo ci, @Local ChannelAccess.ChannelHandle sourceManager, @Local SoundInstance soundInstance) {
-		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
+		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
 	}
 	
-	@Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
+	@Inject(method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
 	public void reverb$play(SoundInstance soundInstance, CallbackInfo ci, @Local ChannelAccess.ChannelHandle sourceManager) {
-		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
+		sourceManager.execute(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
+		sourceManager.execute(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getSource()));
 	}
 	
 	@Inject(method = "reload()V", at = @At("TAIL"))

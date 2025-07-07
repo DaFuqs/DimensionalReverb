@@ -1,15 +1,16 @@
 package de.dafuqs.reverb.sound.distortion;
 
-import de.dafuqs.reverb.*;
 import de.dafuqs.reverb.sound.*;
 import net.minecraft.client.*;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.util.*;
+import net.neoforged.api.distmarker.*;
 import org.apache.logging.log4j.*;
 import org.lwjgl.openal.*;
 
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 public class DistortionFilter {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -53,7 +54,7 @@ public class DistortionFilter {
 		Minecraft client = Minecraft.getInstance();
 		
 		if (!(client.level == null)) {
-			Optional<SoundEffects> soundEffects = Reverb.SOUND_EFFECTS.getOptional(client.level.dimension().location());
+			Optional<SoundEffects> soundEffects = SoundEffects.SOUND_EFFECTS.getOptional(client.level.dimension().location());
 			if (soundEffects.isPresent()) {
 				Optional<DistortionEffect> distortion = soundEffects.get().getDistortion();
 				if (distortion.isPresent()) {
