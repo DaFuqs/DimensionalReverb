@@ -15,16 +15,16 @@ import java.util.concurrent.*;
 @Mixin(SoundSystem.class)
 public abstract class SoundSystemMixin {
 	
-	@Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getSoundVolume(Lnet/minecraft/sound/SoundCategory;)F"))
-	public void reverb$tick(CallbackInfo ci, @Local Channel.SourceManager sourceManager, @Local SoundInstance soundInstance) {
-		sourceManager.run(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-		sourceManager.run(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
+	@Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;isStopped()Z"))
+	public void reverb$tick(CallbackInfo ci, @Local Channel.SourceManager sourceManager, @Local SoundInstance sound) {
+		sourceManager.run(source -> ReverbFilter.update(sound, ((SourceAccessor) source).getPointer()));
+		sourceManager.run(source -> DistortionFilter.update(sound, ((SourceAccessor) source).getPointer()));
 	}
 	
-	@Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
-	public void reverb$play(SoundInstance soundInstance, CallbackInfo ci, @Local Channel.SourceManager sourceManager) {
-		sourceManager.run(source -> ReverbFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
-		sourceManager.run(source -> DistortionFilter.update(soundInstance, ((SourceAccessor) source).getPointer()));
+	@Inject(method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/Channel$SourceManager;run(Ljava/util/function/Consumer;)V", ordinal = 0, shift = Shift.AFTER))
+	public void reverb$play(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> cir, @Local Channel.SourceManager sourceManager) {
+		sourceManager.run(source -> ReverbFilter.update(sound, ((SourceAccessor) source).getPointer()));
+		sourceManager.run(source -> DistortionFilter.update(sound, ((SourceAccessor) source).getPointer()));
 	}
 	
 	@Inject(method = "reloadSounds()V", at = @At("TAIL"))
